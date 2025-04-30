@@ -1,126 +1,110 @@
 # VulSchedula – Vulnerable Scheduling App
 
-**VulSchedula** is a Django-based web application developed as a playful yet educational tool for students enrolled in _Introduction to Secure Computing_. Inspired by doodle-like applications, VulSchedula allows users to create scheduling polls and share them via email for voting.
+> **Educational Use Only**  
+> This project is intentionally insecure. Do **not** deploy it in production or trust its code without auditing.
 
-However, beware! VulSchedula intentionally contains hidden vulnerabilities and security pitfalls, designed specifically for educational purposes.
+**VulSchedula** is a Django‑based web application inspired by doodle‑style schedulers, designed as a hands‑on learning tool for _Introduction to Secure Computing_. It lets users create scheduling polls, share them via email, and collect votes—all while containing built‑in security pitfalls for you to discover and fix.
 
-## Educational Objectives
+---
 
-- **Identify Security Vulnerabilities:** Students must analyze and audit the provided codebase, identifying vulnerabilities that expose sensitive data.
-- **Understanding Risks of Downloaded Software:** Highlighting the importance of code auditing and discouraging blind trust in downloaded or publicly available software.
-- **Simulate Malicious Web Hosting:** Students also take on the role of a mischievous hosting provider aiming to exploit vulnerabilities to steal sensitive information, specifically passwords provided by the instructor.
+## 🎯 Educational Objectives
 
-## Features
+1. **Identify Security Vulnerabilities**  
+   Audit the codebase to find flaws that could leak sensitive data.
+2. **Understand Risks of Third‑Party Code**  
+   Learn why you should never blindly trust or deploy unverified software.
+3. **Role‑Play a Malicious Hosting Provider**  
+   Exploit vulnerabilities to steal instructor‑provided credentials and document your process.
 
-- **Poll Creation:** Users can select multiple date/time options.
-- **Poll Sharing:** Share polls directly via generated URLs sent through email.
-- **Poll Voting:** External users can vote on their preferred date/time.
-- **Hidden Vulnerabilities:** Built-in vulnerabilities and mischievous code snippets intentionally designed to leak poll data or user passwords.
+---
 
-## Setup
+## 🔍 Features
 
-### Requirements
+- **Poll Creation:** Select multiple date/time options.
+- **Poll Sharing:** Generate and email poll URLs to participants.
+- **Poll Voting:** External users cast their votes on a simple web form.
+- **Hidden Vulnerabilities:** Deliberate flaws that leak poll data, user credentials, or database info.
 
-- Docker
-- Docker Compose
+---
 
-### Installation
+## 📦 Requirements
 
-Update the file variables.env
+- Docker & Docker Compose  
+- Bash shell  
+- `msmtp` or another SMTP client configured for sending emails (optional)
 
-```bash
+---
 
-RABBITMQ_DEFAULT_USER=guest
-RABBITMQ_DEFAULT_PASS=guest
-AMQP_HOST=rabbitmq
-AMQP_USERNAME=guest
-AMQP_PASSWORD=guest
-AMQP_PORT=5672
-AMQP_VHOST=/
+## 🚀 Setup & Run
 
-REDIS_HOST=redis
-REDIS_USERNAME=guest
-REDIS_PORT=6379
-REDIS_DB=1
-REDIS_DB_OPT=1
-REDIS_DB_CELERY=1
-REDIS_DB_RESULT=1
-REDIS_DB_CACHE=3
-CELERY_BROKER=redis://redis:6379/1
-CELERY_BACKEND=redis://redis:6379/2
+1. **Configure environment**  
+   - Copy or create `variables.env` in the project root (see sample below).
+2. **Clone repository**
+   ```bash
+   git clone git@github.com:gtoscano/VulSchedula.git
+   cd VulSchedula
+   sudo bash mod_permissions.sh
+   ```
+3. **(Optional) Build Docker images**
+   ```bash
+   docker compose build --no-cache
+   ```
+4. **Launch the application**
+   ```bash
+   docker compose up -d
+   ```
+5. **Verify**  
+   Open `http://127.0.0.1` (or your host’s IP) in a browser.
 
-DB_HOST=postgres
-DB_ENGINE=django.db.backends.postgresql
-DB_PORT=5432
-POSTGRES_DB=vul_schedula
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=yourpassword
+<details>
+  <summary>Sample <code>variables.env</code></summary>
 
-DJANGO_SUPERUSER_FIRST_NAME=admin
-DJANGO_SUPERUSER_LAST_NAME=root
-DJANGO_SUPERUSER_USERNAME=admin
-DJANGO_SUPERUSER_EMAIL=youremail@cua.edu
-DJANGO_SUPERUSER_PASSWORD=yourpassword
-HOST_IP=192.168.1.X
-HOST_NAME=home-vulschedula.catholic-u.ai
-SECURE_SSL_REDIRECT=True
-RUN_INIT_SCRIPT=True
-CREATE_SUPERUSER=True
-HOST_DIR=/PATH_TO/VulShedula/
-PARENT_DIR=/app
-DOCKER_GID=994
+  ```ini
+  RABBITMQ_DEFAULT_USER=guest
+  RABBITMQ_DEFAULT_PASS=guest
+  AMQP_HOST=rabbitmq
+  AMQP_PORT=5672
+  REDIS_HOST=redis
+  REDIS_PORT=6379
+  POSTGRES_DB=vul_schedula
+  POSTGRES_USER=postgres
+  POSTGRES_PASSWORD=yourpassword
+  DJANGO_SUPERUSER_USERNAME=admin
+  DJANGO_SUPERUSER_PASSWORD=yourpassword
+  HOST_IP=192.168.1.X
+  HOST_NAME=home-vulschedula.catholic-u.ai
+  CREATE_SUPERUSER=True
+  RUN_INIT_SCRIPT=True
+  ```
+</details>
 
-```
+---
 
-Clone the repository:
-
-```bash
-git clone git@github.com:gtoscano/VulSchedula.git
-cd VulSchedula
-# Do not forget to create or copy your variables.env to this directory
-sudo bash mod_permissions.sh
-```
-
-Generate the Docker images (optional)
-
-```bash
-docker compose build --no-cache
-```
-
-Run the application:
-
-```bash
-docker compose up -d
-```
-
-Check the application: Go to your browser at address: 127.0.0.1 or your IP and check the app.
-
-## Tasks for Students
-
-- Once that you have the code running on your local machine, come to see me so I can exploit a vulnerability so you can have hints on how to fix the code.
-
-## Make sure that
-
-- Only registered users can crate a new poll
-- Only the users who created a poll can close it
-- If a poll is private, then only invited users should be able to vote
-- If a poll is private, then only invited users should be able to download the calendar.
-- I don't deceive you
+## 🎓 Student Tasks
 
 ### Task 1: Security Analyst
-
-- Audit the code to find and document vulnerabilities that could expose user poll data.
-- Identify and explain potential risks associated with using unverified third-party code.
+- Audit the code and document at least **five** distinct vulnerabilities (e.g., SQL injection, weak file permissions, insecure command execution).
+- Explain the risk and propose how to fix each issue.
 
 ### Task 2: Mischievous Hosting Provider
+- Acting as an attacker, exploit one or more vulnerabilities to **steal three** pre‑created usernames/passwords.
+- Provide step‑by‑step documentation of how you executed the exploit.
 
-- Attempt to exploit vulnerabilities to steal three pre-created usernames/passwords provided by the instructor.
-- Document how the exploits were carried out successfully.
+Once you have the app running locally, **come see me** in my office. I’ll demonstrate exploiting one vulnerability live to guide your next steps.
 
-## Important Note
+---
 
-**Always thoroughly review code downloaded from external sources!**
+## 🔒 Security Goals
 
-Feel free to dive into the Docker containers and source files. Watch out for those sneaky traps and "cheap tricks" deliberately hidden in the code. Remember, it's all in good fun—and education!
+- ✅ Only registered users can create polls.  
+- ✅ Only poll creators can close their polls.  
+- ✅ Private polls restrict voting and calendar downloads to invited users.  
 
-Happy hacking!
+---
+
+**⚠️ Disclaimer:** This software is intentionally insecure and provided for educational purposes. Do **not** deploy or use it in any environment where security matters.
+
+---
+
+**Happy hacking!**  
+
