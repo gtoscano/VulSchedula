@@ -80,6 +80,12 @@ cd VulSchedula
 sudo bash mod_permissions.sh
 ```
 
+Generate the Docker images:
+
+```bash
+docker compose build --no-cache
+```
+
 Run the application:
 
 ```bash
@@ -89,6 +95,8 @@ docker compose up -d
 Check the application: Go to your browser at address: 127.0.0.1 and check the app.
 
 ## Tasks for Students
+
+- Once that you have the code running on your local machine, come to see me so I can exploit a vulnerability so you can have hints on how to fix the code.
 
 ## Make sure that
 
