@@ -42,62 +42,6 @@
     </div>
   </section>
 
-  <!-- Features / Labs Section -->
-  <section id="features" class="py-16 bg-base-200">
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-semibold text-center mb-12">Vulnerability Labs</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        
-        <!-- Lab 1 -->
-        <div class="card bg-base-100 shadow-lg">
-          <div class="card-body">
-            <h3 class="card-title">Insecure File Download</h3>
-            <p>
-              Simulate an unvalidated file download endpoint.  
-              Learn to validate paths, enforce whitelists, and prevent directory traversal.
-            </p>
-            <div class="card-actions justify-end">
-              <a href="{ % url 'labs:file_download' % }" class="btn btn-primary">
-                Try It
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Lab 2 -->
-        <div class="card bg-base-100 shadow-lg">
-          <div class="card-body">
-            <h3 class="card-title">Cross-Site Scripting (XSS)</h3>
-            <p>
-              Explore reflected and stored XSS in form inputs.  
-              Practice proper escaping, CSP headers, and sanitization.
-            </p>
-            <div class="card-actions justify-end">
-              <a href="{ % url 'labs:xss' % }" class="btn btn-primary">
-                Launch Lab
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Lab 3 -->
-        <div class="card bg-base-100 shadow-lg">
-          <div class="card-body">
-            <h3 class="card-title">CSRF Defense</h3>
-            <p>
-              Attack a form without CSRF protection, then learn to integrate tokens, SameSite cookies, and double-submit cookies.
-            </p>
-            <div class="card-actions justify-end">
-              <a href="{ % url 'labs:csrf' % }" class="btn btn-primary">
-                Begin Lab
-              </a>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
 
   <!-- Call to Action -->
   <section class="py-16 bg-white text-center">

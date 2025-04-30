@@ -81,7 +81,7 @@ cd VulSchedula
 sudo bash mod_permissions.sh
 ```
 
-Generate the Docker images:
+Generate the Docker images (optional)
 
 ```bash
 docker compose build --no-cache
@@ -93,7 +93,7 @@ Run the application:
 docker compose up -d
 ```
 
-Check the application: Go to your browser at address: 127.0.0.1 and check the app.
+Check the application: Go to your browser at address: 127.0.0.1 or your IP and check the app.
 
 ## Tasks for Students
 
