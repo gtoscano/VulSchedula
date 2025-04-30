@@ -23,7 +23,7 @@ services:
       dockerfile: Dockerfile
       args:
         DOCKER_GID: ${DOCKER_GID}
-    image: transfero-app:latest # Built image
+    image: vulschedula-app:latest # Built image
     #privileged: true
     command: >
       sh -c "
@@ -61,7 +61,7 @@ services:
 
   #Celery Worker Service
   celery:
-    image: transfero-app:latest
+    image: vulschedula-app:latest
     command: >
       sh -c "
         ./wait-for-it.sh web:8080 -- 
@@ -93,7 +93,7 @@ services:
 
   # Celery Beat Service
   celery-beat:
-    image: transfero-app:latest
+    image: vulschedula-app:latest
 
     command: >
       sh -c "
