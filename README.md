@@ -75,8 +75,9 @@ DOCKER_GID=994
 Clone the repository:
 
 ```bash
-git clone git@github.com:gtoscano/VulShedula.git
+git clone git@github.com:gtoscano/VulSchedula.git
 cd VulSchedula
+sudo bash mod_permissions.sh
 ```
 
 Run the application:

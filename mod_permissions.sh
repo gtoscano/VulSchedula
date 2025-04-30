@@ -5,6 +5,7 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
+mkdir -p media static
 chown -R www-data:www-data celerybeat-schedule media scripts
 chown -R www-data:www-data static
 chown gtoscano:www-data static_files
