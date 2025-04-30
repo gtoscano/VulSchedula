@@ -77,6 +77,7 @@ Clone the repository:
 ```bash
 git clone git@github.com:gtoscano/VulSchedula.git
 cd VulSchedula
+# Do not forget to create or copy your variables.env to this directory
 sudo bash mod_permissions.sh
 ```
 
