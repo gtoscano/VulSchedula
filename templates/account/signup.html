@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load partials %}
+{% load static %}
+{% load i18n %}
+{% load allauth account socialaccount %}
+{% block content %}
+{% load allauth i18n socialaccount %}
+
+<div class="flex flex-col items-center justify-center min-h-screen py-12 bg-base-200">
+    <div class="w-full max-w-md p-8 bg-base-100 shadow-xl rounded-lg">
+        <h2 class="text-2xl font-bold text-center mb-4">Create Your Account</h2>
+
+        <form method="POST" action="{% url 'account_signup' %}" class="space-y-4">
+            {% csrf_token %}
+
+            <div>
+                <label class="label" for="id_email">Email</label>
+                <input type="email" name="email" id="id_email" required
+                       class="input input-bordered w-full" placeholder="you@example.com">
+            </div>
+
+            <div>
+                <label class="label" for="id_password1">Password</label>
+                <input type="password" name="password1" id="id_password1" required
+                       class="input input-bordered w-full" placeholder="Your password">
+            </div>
+
+            <div>
+                <label class="label" for="id_password2">Confirm Password</label>
+                <input type="password" name="password2" id="id_password2" required
+                       class="input input-bordered w-full" placeholder="Confirm your password">
+            </div>
+
+            {% if form.errors %}
+                <div class="alert alert-error">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary w-full">Sign Up</button>
+        </form>
+
+        <p class="mt-4 text-center text-sm">
+            Already have an account?
+            <a href="{% url 'account_login' %}" class="link link-hover">Log in</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

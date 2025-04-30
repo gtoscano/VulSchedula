@@ -1,0 +1,13 @@
+
+<div id="d{{ doodle.id }}" class="card bg-base-100 shadow-lg">
+  <figure><img src="{{ doodle.image.url }}" alt="" /></figure>
+  <div class="card-body p-4">
+     <h2 class="card-title">{{ doodle.title }}</h2>
+     <p class="text-sm opacity-60">{{ doodle.created|date:"Y-m-d H:i" }}</p>
+     <button class="btn btn-sm btn-error mt-2"
+             hx-delete="{% url 'delete' doodle.id %}"
+             hx-swap="outerHTML swap:1s">
+       Delete
+     </button>
+  </div>
+</div>

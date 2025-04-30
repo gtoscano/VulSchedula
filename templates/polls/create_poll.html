@@ -1,0 +1,18 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+  <h2 class="text-2xl font-semibold">Create Poll</h2>
+  {{ form.as_p }} <!-- Important: use "form", not "poll_form" -->
+
+  <h3 class="text-xl font-semibold mt-4">Available Slots</h3>
+  {{ formset.management_form }}
+  {% for form in formset %}
+    <div class="mb-2">{{ form.as_p }}</div>
+  {% endfor %}
+
+  <button class="btn btn-primary">Create</button>
+</form>
+{% endblock %}

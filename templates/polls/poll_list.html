@@ -1,0 +1,62 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">Your Polls</h1>
+
+  <a href="{% url 'polls:create' %}" class="btn btn-primary mb-6">
+    Create New Poll
+  </a>
+
+  {% if polls %}
+  <div class="space-y-4">
+    {% for poll in polls %}
+    <div class="card bg-base-100 shadow-md hover:shadow-xl transition-shadow duration-200">
+      <div class="card-body">
+        <div class="card-title flex justify-between items-center">
+          <a href="{% url 'polls:details' poll.id %}" class="link link-hover">
+            {{ poll.title }}
+          </a>
+          <button class="btn btn-sm btn-neutral" onclick="copyToClipboard('{{ poll.full_url }}')">
+              Copy URL
+          </button>
+        </div>
+        <p class="text-sm text-gray-600">
+          {{ poll.description|default:"No description provided." }}
+        </p>
+        <div class="text-xs text-gray-400">
+          Created by {{ poll.creator_name }} on {{ poll.created_at|date:"F j, Y, g:i a" }}
+        </div>
+        <div class="mt-2 flex gap-2 items-center">
+          <span class="badge badge-primary">{{ poll.total_votes }} votes</span>
+          {% if not poll.is_closed and poll.top_slot %}
+          <form method="post" action="{% url 'polls:close_poll' poll.id poll.top_slot.id %}">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-error">Close Poll</button>
+          </form>
+          {% elif poll.is_closed %}
+            <span class="badge badge-success">Closed</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-info">
+    You haven't created any polls yet. Click above to create one!
+  </div>
+  {% endif %}
+</div>
+
+<script>
+function copyToClipboard(url) {
+  navigator.clipboard.writeText(url).then(() => {
+    alert('Poll URL copied!');
+  }).catch(() => {
+    alert('Failed to copy URL.');
+  });
+}
+</script>
+{% endblock %}

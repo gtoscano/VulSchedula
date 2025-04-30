@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-3xl font-bold">{{ poll.title }}</h1>
+<p>{{ poll.description }}</p>
+
+{% if poll.is_closed %}
+<div class="alert alert-info mt-4">This poll is closed.</div>
+
+{% else %}
+  {% if poll.poll_type == 'private' and user not in poll.invited_users.all %}
+    <div class="alert alert-error mt-4">This is a private poll. You are not invited to vote.</div>
+
+  {% elif poll.poll_type == 'semi' and not user.is_authenticated %}
+    <div class="alert alert-warning mt-4">You must log in to vote on this semi-public poll.</div>
+
+  {% else %}
+    <form method="post" id="voteForm" class="mt-4">
+      {% csrf_token %}
+      <input name="voter_name" class="input input-bordered my-4" placeholder="Your name" required />
+
+      {% for slot in poll.slots.all %}
+      <div class="flex items-center gap-2 mb-4">
+        <input type="radio" name="slot" value="{{ slot.id }}" required />
+        <div>
+          <strong>{{ slot.datetime|date:"D, M d Y, H:i A" }}</strong>
+          <span class="badge badge-primary ml-2">{{ slot.votes.count }} votes</span>
+          <ul class="list-disc ml-6 mt-1 text-sm">
+            {% for vote in slot.votes.all %}
+              <li>{{ vote.voter_name }}</li>
+            {% empty %}
+              <li>No votes yet.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% endfor %}
+      
+      <button class="btn btn-secondary">Vote</button>
+    </form>
+  {% endif %}
+{% endif %}
+
+{% if not poll.is_closed %}
+  <div class="mt-4 p-4 border rounded bg-base-200">
+    <h3 class="font-bold mb-2">Close Poll & Select Final Date:</h3>
+    {% for slot in poll.slots.all %}
+      <form method="post" action="{% url 'polls:close_poll' poll.id slot.id %}">
+        {% csrf_token %}
+        <button class="btn btn-sm btn-error">
+          Close Poll & Choose "{{ slot.datetime|date:"D, M d Y, H:i A" }}"
+        </button>
+      </form>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="mt-4 p-4 bg-green-100 rounded">
+    Poll Closed! Selected date: <strong>{{ poll.selected_slot.datetime }}</strong>
+    <a href="{% url 'polls:download_ics' poll.id %}" class="btn btn-sm btn-success ml-2">
+      Download Calendar (.ics)
+    </a>
+  </div>
+{% endif %}
+
+<script>
+document.getElementById("voteForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const selectedSlot = document.querySelector('input[name="slot"]:checked');
+  if (!selectedSlot) {
+    alert("Please select a slot.");
+    return;
+  }
+  const slotId = selectedSlot.value;
+  const form = e.target;
+  form.action = "{% url 'polls:vote' slot_id=9999 %}".replace('9999', slotId);
+  form.submit();
+});
+</script>
+
+{% endblock %}

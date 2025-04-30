@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="flex flex-col lg:flex-row gap-6">
+  <!-- left column: canvas -->
+  <section class="flex-1">
+    <form id="doodleForm"
+          hx-post="{% url 'create' %}"
+          hx-target="#doodleList"
+          hx-swap="afterbegin"
+          class="flex flex-col gap-2">
+      <input type="text" name="title" placeholder="Title"
+             class="input input-bordered w-full"/>
+      <canvas id="pad" width="600" height="400"
+              class="border rounded-box shadow-lg bg-base-100"></canvas>
+      <input type="hidden" name="dataurl" />
+      <button type="submit" class="btn btn-primary w-full">Save</button>
+    </form>
+  </section>
+
+  <!-- right column: list -->
+  <section id="doodleList" class="flex-1 space-y-4">
+    {% for doodle in doodles %}
+        {% include "doodles/_card.html" with doodle=doodle %}
+    {% empty %}
+      <p class="text-base-content/60">No doodles yet.</p>
+    {% endfor %}
+  </section>
+</div>
+<script src="{% static 'js/canvas.js' %}"></script>
+{% endblock %}

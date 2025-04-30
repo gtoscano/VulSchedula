@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load partials %}
+{% load static %}
+
+{% block content %}
+
+  <!-- Hero Section -->
+  <section class="hero min-h-screen bg-base-200">
+    <div class="hero-content flex-col lg:flex-row-reverse">
+      <!-- Logo Image -->
+      <img src="{% static 'logos/logo-vulschedula.png' %}"
+           alt="VulShedula Logo"
+           class="max-w-xs rounded-lg shadow-2xl">
+      <!-- Hero Text -->
+      <div class="text-center lg:text-left">
+        <h1 class="text-5xl font-bold">Welcome to VulShedula</h1>
+        <p class="py-6">
+          A vulnerable, doodle-style scheduler built for secure computing students.  
+          Learn to spot and patch real-world flaws in web apps—right here, in class.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <a href="#features" class="btn btn-primary btn-lg">Explore Labs</a>
+          <a href="{% url 'polls:create' %}" class="btn btn-outline btn-secondary btn-lg">
+            Schedule a Meeting
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-16 bg-white">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-semibold mb-4">About VulShedula</h2>
+      <p class="max-w-2xl mx-auto text-lg">
+        VulShedula looks and feels like any other online scheduling tool—but intentionally packs common vulnerabilities:
+        insecure file downloads, XSS, CSRF, and more.  
+        Your mission: find each flaw, propose a fix, and re-secure the app.  
+        Perfect for hands-on learning in Intro to Secure Computing.
+      </p>
+    </div>
+  </section>
+
+  <!-- Features / Labs Section -->
+  <section id="features" class="py-16 bg-base-200">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-semibold text-center mb-12">Vulnerability Labs</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Lab 1 -->
+        <div class="card bg-base-100 shadow-lg">
+          <div class="card-body">
+            <h3 class="card-title">Insecure File Download</h3>
+            <p>
+              Simulate an unvalidated file download endpoint.  
+              Learn to validate paths, enforce whitelists, and prevent directory traversal.
+            </p>
+            <div class="card-actions justify-end">
+              <a href="{ % url 'labs:file_download' % }" class="btn btn-primary">
+                Try It
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2 -->
+        <div class="card bg-base-100 shadow-lg">
+          <div class="card-body">
+            <h3 class="card-title">Cross-Site Scripting (XSS)</h3>
+            <p>
+              Explore reflected and stored XSS in form inputs.  
+              Practice proper escaping, CSP headers, and sanitization.
+            </p>
+            <div class="card-actions justify-end">
+              <a href="{ % url 'labs:xss' % }" class="btn btn-primary">
+                Launch Lab
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 3 -->
+        <div class="card bg-base-100 shadow-lg">
+          <div class="card-body">
+            <h3 class="card-title">CSRF Defense</h3>
+            <p>
+              Attack a form without CSRF protection, then learn to integrate tokens, SameSite cookies, and double-submit cookies.
+            </p>
+            <div class="card-actions justify-end">
+              <a href="{ % url 'labs:csrf' % }" class="btn btn-primary">
+                Begin Lab
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-16 bg-white text-center">
+    <div class="container mx-auto px-4">
+      <h2 class="text-2xl font-medium mb-6">Ready to Secure the Scheduler?</h2>
+      <a href="{% url 'polls:create' %}" class="btn btn-accent btn-lg">
+        Create a Poll &rarr;
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer footer-center p-6 bg-primary text-primary-content">
+    <div>
+      <p>&copy; 2025 VulShedula. All rights reserved.</p>
+      <p>Designed by Gregorio Toscano: Intro to Secure Computing at CUA</p>
+    </div>
+  </footer>
+
+{% endblock content %}
