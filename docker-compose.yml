@@ -35,6 +35,7 @@ services:
 
     ports:
       - "8080:8080"
+      - "8000:8000" # in case 8080 is used, use 8000 port
     user: www-data
     depends_on:
       postgres:

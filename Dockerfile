@@ -61,7 +61,7 @@ RUN pip install --upgrade pip && \
   pip install pipenv
 
 
-EXPOSE 8080
+EXPOSE 8080 8000
 
 WORKDIR /app/
 COPY --chown=www-data:www-data . ./
