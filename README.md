@@ -42,6 +42,7 @@
 2. **Clone repository**
    ```bash
    git clone git@github.com:gtoscano/VulSchedula.git
+   git 
    cd VulSchedula
    sudo bash mod_permissions.sh
    ```
