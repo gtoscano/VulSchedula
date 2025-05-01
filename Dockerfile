@@ -77,7 +77,6 @@ RUN usermod -a -G docker www-data
 RUN usermod -d /app/home www-data 
 
 USER www-data 
-RUN npm install
 
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
 

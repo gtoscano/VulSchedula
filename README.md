@@ -38,15 +38,15 @@
 ## 🚀 Setup & Run
 
 1. **Configure environment**  
-   - Copy or create `variables.env` in the project root (see sample below).
+   - Copy or create `variables.env` in the project root (see sample below). If your docker group ID (DOCKER_GID) is below 900, please pick one available after 900 (check in /etc/group, then run sudo groupmod -g 9XX).
 2. **Clone repository**
    ```bash
-   git clone git@github.com:gtoscano/VulSchedula.git
+   git clone https://github.com/gtoscano/VulSchedula.git
    git 
    cd VulSchedula
    sudo bash mod_permissions.sh
    ```
-3. **(Optional) Build Docker images**
+3. **Build Docker images**
    ```bash
    docker compose build --no-cache
    ```
@@ -61,21 +61,45 @@
   <summary>Sample <code>variables.env</code></summary>
 
   ```ini
-  RABBITMQ_DEFAULT_USER=guest
-  RABBITMQ_DEFAULT_PASS=guest
-  AMQP_HOST=rabbitmq
-  AMQP_PORT=5672
-  REDIS_HOST=redis
-  REDIS_PORT=6379
-  POSTGRES_DB=vul_schedula
-  POSTGRES_USER=postgres
-  POSTGRES_PASSWORD=yourpassword
-  DJANGO_SUPERUSER_USERNAME=admin
-  DJANGO_SUPERUSER_PASSWORD=yourpassword
-  HOST_IP=192.168.1.X
-  HOST_NAME=home-vulschedula.catholic-u.ai
-  CREATE_SUPERUSER=True
-  RUN_INIT_SCRIPT=True
+RABBITMQ_DEFAULT_USER=guest
+RABBITMQ_DEFAULT_PASS=guest
+AMQP_HOST=rabbitmq
+AMQP_USERNAME=guest
+AMQP_PASSWORD=guest
+AMQP_PORT=5672
+AMQP_VHOST=/
+
+REDIS_HOST=redis
+REDIS_USERNAME=guest
+REDIS_PORT=6379
+REDIS_DB=1
+REDIS_DB_OPT=1
+REDIS_DB_CELERY=1
+REDIS_DB_RESULT=1
+REDIS_DB_CACHE=3
+CELERY_BROKER=redis://redis:6379/1
+CELERY_BACKEND=redis://redis:6379/2
+
+DB_HOST=postgres
+DB_ENGINE=django.db.backends.postgresql
+DB_PORT=5432
+POSTGRES_DB=vul_schedula
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=PASSWORD
+
+DJANGO_SUPERUSER_FIRST_NAME=admin
+DJANGO_SUPERUSER_LAST_NAME=LASTNAME
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=email@localhost
+DJANGO_SUPERUSER_PASSWORD=PASSWORD
+HOST_IP=192.168.0.X#Your IP
+HOST_NAME=NAME_YOU_WANT_TO_USE
+SECURE_SSL_REDIRECT=True
+RUN_INIT_SCRIPT=True
+CREATE_SUPERUSER=True
+HOST_DIR=/PATH/VulShedula/
+PARENT_DIR=/app
+DOCKER_GID=996
   ```
 </details>
 
