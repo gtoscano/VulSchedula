@@ -49,7 +49,7 @@ services:
     environment:
       - SERVICE_TYPE=web
     volumes:
-      - app-data:/app/src # Consider limiting if not necessary for all services
+      - vulschedula-data:/app/src # Consider limiting if not necessary for all services
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - internal-net
@@ -81,7 +81,7 @@ services:
       - SERVICE_TYPE=celery
       - /var/run/docker.sock:/var/run/docker.sock
     volumes:
-      - app-data:/app
+      - vulschedula-data:/app
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - internal-net
@@ -114,7 +114,7 @@ services:
     environment:
       - SERVICE_TYPE=celery-beat
     volumes:
-      - app-data:/app
+      - vulschedula-data:/app
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - internal-net
@@ -129,7 +129,7 @@ services:
     image: postgres:14.5
     restart: always
     volumes:
-      - app-postgres:/var/lib/postgresql/data
+      - vulschedula-postgres:/var/lib/postgresql/data
     env_file:
       - variables.env
     networks:
@@ -150,7 +150,7 @@ services:
     env_file:
       - variables.env
     volumes:
-      - app-rabbitmq:/var/lib/rabbitmq
+      - vulschedula-rabbitmq:/var/lib/rabbitmq
     networks:
       - internal-net
     healthcheck:
@@ -166,7 +166,7 @@ services:
     env_file:
       - variables.env
     volumes:
-      - app-redis:/data
+      - vulschedula-redis:/data
     networks:
       - internal-net
     healthcheck:
@@ -180,7 +180,7 @@ networks:
     driver: bridge
 
 volumes:
-  app-data: {}                         # declare the named volume
-  app-postgres: {}                         # declare the named volume
-  app-rabbitmq: {}                         # declare the named volume
-  app-redis: {}                         # declare the named volume
+  vulschedula-data: {}                         # declare the named volume
+  vulschedula-postgres: {}                         # declare the named volume
+  vulschedula-rabbitmq: {}                         # declare the named volume
+  vulschedula-redis: {}                         # declare the named volume
