@@ -65,11 +65,11 @@ EXPOSE 8080 8000
 
 WORKDIR /app/
 COPY --chown=www-data:www-data . ./
-COPY docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
+#COPY docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
 
 # COPY . ./
 RUN chown -R www-data:www-data /app && \
-  chmod +x /usr/bin/docker-entrypoint.sh && \
+  chmod +x /app/docker-entrypoint.sh && \
   chown -R www-data:www-data /code
 
 RUN pipenv install --system --deploy
@@ -79,5 +79,5 @@ RUN usermod -d /app/home www-data
 
 USER www-data 
 
-ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
