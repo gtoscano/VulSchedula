@@ -67,6 +67,7 @@ WORKDIR /app/
 COPY --chown=www-data:www-data . ./
 
 # COPY . ./
+COPY docker-entrypoint.sh /app/
 RUN chown -R www-data:www-data /app && \
   chmod +x /app/docker-entrypoint.sh && \
   chown -R www-data:www-data /code
