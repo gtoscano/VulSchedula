@@ -108,12 +108,12 @@ DOCKER_GID=996
 ## 🎓 Student Tasks
 
 ### Task 1: Security Analyst
-- Audit the code and document at least **five** distinct vulnerabilities (e.g., SQL injection, weak file permissions, insecure command execution).
+- Audit the code and document at least **three** distinct vulnerabilities (e.g., SQL injection, weak file permissions, insecure command execution).
 - Explain the risk and propose how to fix each issue.
 
 ### Task 2: Mischievous Hosting Provider
 - Acting as an attacker, exploit one or more vulnerabilities to **steal three** pre‑created usernames/passwords.
-- Provide step‑by‑step documentation of how you executed the exploit.
+- Provide step‑by‑step documentation of how you executed the exploit, and how to overcome such a problem.
 
 Once you have the app running locally, **come see me** in my office. I’ll demonstrate exploiting one vulnerability live to guide your next steps.
 
