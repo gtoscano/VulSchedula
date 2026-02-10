@@ -23,7 +23,7 @@
 - **Poll Creation:** Select multiple date/time options.
 - **Poll Sharing:** Generate and email poll URLs to participants.
 - **Poll Voting:** External users cast their votes on a simple web form.
-- **Hidden Vulnerabilities:** Deliberate flaws that leak poll data, user credentials, or database info.
+- **Hidden Vulnerabilities:** Deliberate flaws that leak poll data, user credentials, or hidden doors.
 
 ---
 
@@ -38,7 +38,7 @@
 ## 🚀 Setup & Run
 
 1. **Configure environment**  
-   - Copy or create `variables.env` in the project root (see sample below). If your docker group ID (DOCKER_GID) is below 900, please pick one available after 900 (check in /etc/group, then run sudo groupmod -g 9XX).
+   - Copy or create `variables.env` in the project root (see sample below). If your docker group ID (DOCKER_GID) is below 900, please pick one available after 900 (check in /etc/group, then run sudo groupmod -g 9XX). I have already provided an example file called: `variables.env-example`, that you can modify with your own code.
 2. **Clone repository**
    ```bash
    git clone https://github.com/gtoscano/VulSchedula.git
@@ -55,8 +55,9 @@
    docker compose up -d
    ```
 5. **Verify**  
-   Open `http://127.0.0.1` (or your host’s IP) in a browser.
+   Open `http://127.0.0.1` (or your host’s IP) in a browser. It is worth noting, that this project has enabled https, so that you can also use `https://127.0.0.1`, you might be able to use `localhost` or the hostname that you set up in the variables.env.
 
+## variables.env sample.
 <details>
   <summary>Sample <code>variables.env</code></summary>
 
@@ -97,10 +98,12 @@ HOST_NAME=NAME_YOU_WANT_TO_USE
 SECURE_SSL_REDIRECT=True
 RUN_INIT_SCRIPT=True
 CREATE_SUPERUSER=True
-HOST_DIR=/PATH/VulShedula/
+HOST_DIR=/YOUR_PATH/VulShedula/
 PARENT_DIR=/app
 DOCKER_GID=996
+CURRENT_USER=gtoscano
   ```
+
 </details>
 
 ---
