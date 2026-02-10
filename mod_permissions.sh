@@ -1,25 +1,49 @@
 #!/bin/bash
-set -e
 
 # Ensure we’re running as root
 if [[ $EUID -ne 0 ]]; then
-  echo "This script must be run as root (e.g., using sudo)." >&2
+  echo "This script must be run as root (e.g., using sudo)."
   exit 1
 fi
 
-# Create directories if they don’t exist
-mkdir -p media static
+set -a
+source variables.env
+set +a
 
-# Ownership
-chown -R 33:33 celerybeat-schedule media scripts static
-chown 33:33 static_files static_files/css
-
-# Default permissions for the other dirs
-chmod 775 static_files static_files/css
-
-# macOS-only tweak
-if [[ "$(uname)" == "Darwin" ]]; then
-  # Grant wide-open permissions on “static” so the built-in macOS web stack
-  # (or Docker-for-Mac volume mounts) can write to it without UID/GID mismatch
-  chmod 777 static
+# Check if CURRENT_USER is set
+if [ -z "$CURRENT_USER" ]; then
+  echo "CURRENT_USER is not set in variables.env"
+  exit 1
 fi
+
+if [[ "$(uname)" == "Darwin" ]]; then
+  WEB_USER="$CURRENT_USER"
+  WEB_GROUP="staff"
+else
+  WEB_USER="www-data"
+  WEB_GROUP="www-data"
+fi
+
+echo "Using web user:group -> ${WEB_USER}:${WEB_GROUP}"
+
+mkdir -p media static
+if [ -f package-lock.json ]; then
+  rm package-lock.json
+fi
+
+if [ -f static_files/css/daisyui.css ]; then
+  rm static_files/css/daisyui.css
+fi
+
+touch package-lock.json
+mkdir -p node_modules home .celery
+
+# Apply correct ownership
+chown -R "$WEB_USER":"$WEB_GROUP" package.json package-lock.json media node_modules home .celery
+chown -R "$WEB_USER":"$WEB_GROUP" static
+
+# static_files belongs to CURRENT_USER + web group (staff on mac)
+chown "$CURRENT_USER":"$WEB_GROUP" static_files
+chown "$CURRENT_USER":"$WEB_GROUP" static_files/css
+
+chmod 775 static_files static_files/css

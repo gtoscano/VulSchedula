@@ -1,17 +1,39 @@
-# docker-compose up --scale web=3 --scale celery=5
 services:
+  certs-init:
+    image: alpine:3.20
+    volumes:
+      - ./certs:/certs
+    entrypoint: >
+      sh -c '
+        if [ ! -f /certs/origin.crt ] || [ ! -f /certs/origin.key ]; then
+          echo "Generating self-signed TLS cert in /certs...";
+          apk add --no-cache openssl;
+          mkdir -p /certs;
+          openssl req -x509 -nodes -days 365 \
+            -newkey rsa:2048 \
+            -keyout /certs/origin.key \
+            -out /certs/origin.crt \
+            -subj "/CN=localhost";
+        else
+          echo "Certs already exist, skipping generation.";
+        fi
+      '
+    restart: "no"
   nginx:
     image: nginx:1.27-alpine
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./certs:/etc/nginx/certs:ro
       - ./nginx/logs:/var/log/nginx
+      - .:/app:consistent
     networks:
       - internal-net
     restart: unless-stopped
     depends_on:
-      - web
-
+      certs-init:
+        condition: service_completed_successfully
+      web:
+        condition: service_started
     ports:
       - "80:80"
       - "443:443"
