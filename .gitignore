@@ -1,6 +1,7 @@
 # Byte-compiled / optimized / DLL files
 static_files/css/daisyui.css
 certs/
+home/
 .~lock.*
 .celery/
 Pipfile.lock

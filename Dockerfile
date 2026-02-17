@@ -16,7 +16,7 @@ ENV SQL_DATABASE=mydb
 ENV SQL_USER=myuser
 ENV SQL_PASSWORD=32ghukj45ihhkj3425
 ENV SQL_PORT=3306
-ARG DOCKER_GID=994  # Default fallback
+ARG DOCKER_GID=994
 
 # fail the build if /version doesn’t exist
 RUN if [ ! -f /version ]; then \
