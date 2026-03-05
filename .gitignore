@@ -6,6 +6,7 @@ home/
 .celery/
 Pipfile.lock
 *.env
+certs/
 static/
 media/
 node_modules/
