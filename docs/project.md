@@ -20,7 +20,7 @@ Connect **only** to the following machine:
 
 ```
 
-192.168.1.77
+192.168.2.77
 
 ```
 
