@@ -53,7 +53,7 @@ RUN groupmod -g ${DOCKER_GID} docker
 
 ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /usr/local/bin/wait-for-it.sh
 RUN chmod +x /usr/local/bin/wait-for-it.sh
-RUN pip install uuid sqlalchemy redis gunicorn watchdog
+RUN pip install sqlalchemy redis gunicorn watchdog
 # https://github.com/ajaxorg/ace-builds.git
 # Install pipenv
 # If an error, use % pipenv lock
@@ -72,7 +72,7 @@ RUN chown -R www-data:www-data /app && \
   chmod +x /app/docker-entrypoint.sh && \
   chown -R www-data:www-data /code
 
-RUN pipenv install --system --deploy
+RUN pipenv lock && pipenv install --system --deploy
 
 RUN usermod -a -G docker www-data 
 RUN usermod -d /app/home www-data 

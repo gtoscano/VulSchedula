@@ -12,7 +12,7 @@ Your objective is to **identify and analyze vulnerabilities**, understand how th
 
 For those who encountered difficulties creating containers previously, I have prepared one for you.
 
-You can access it from the **third floor** by connecting to the **OpenWrt5g network**.
+You can access it from the **third floor** by connecting to the **OpenWrt5g network** or **NachoWIFI5**
 
 Please visit my office or ask anyone in **Pangborn 308** for the network password.
 
