@@ -48,22 +48,15 @@ services:
     #privileged: true
     command: >
       sh -c "
-        ./wait-for-it.sh postgres:5432 --
         ./wait-for-it.sh redis:6379 --
-        ./wait-for-it.sh rabbitmq:5672 --
       "
-      #./wait-for-it.sh docker:2375 --timeout=30 --
 
     ports:
       - "8080:8080"
       - "8000:8000" # in case 8080 is used, use 8000 port
     user: www-data
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
-        condition: service_started
-      rabbitmq:
         condition: service_started
     restart: on-failure
     env_file:
@@ -71,113 +64,12 @@ services:
     environment:
       - SERVICE_TYPE=web
     volumes:
-      - vulschedula-data:/app/src # Consider limiting if not necessary for all services
       - /var/run/docker.sock:/var/run/docker.sock
       - .:/app:consistent
     networks:
       - internal-net
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health/"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  #Celery Worker Service
-  celery:
-    image: vulschedula-app:latest
-    command: >
-      sh -c "
-        ./wait-for-it.sh web:8080 --
-        watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A main worker --loglevel=info
-      "
-      # celery -A main worker --loglevel=info
-      # command: ["celery", "-A", "main", "worker", "--loglevel=info"]
-    user: www-data
-    depends_on:
-      - redis
-      - rabbitmq
-      - web
-    restart: on-failure
-    env_file:
-      - variables.env
-    environment:
-      - SERVICE_TYPE=celery
-      - /var/run/docker.sock:/var/run/docker.sock
-    volumes:
-      - vulschedula-data:/app
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - internal-net
-    healthcheck:
-      test: ["CMD", "celery", "-A", "main", "inspect", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  # Celery Beat Service
-  celery-beat:
-    image: vulschedula-app:latest
-
-    command: >
-      sh -c "
-        ./wait-for-it.sh web:8080 --
-        watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A main beat  --loglevel=info
-      "
-      # celery -A main beat -s /celery/celerybeat-schedule --loglevel=info
-      # command: ["celery", "-A", "main", "worker", "--loglevel=info"]
-      #command: ["celery", "-A", "main", "beat", "--loglevel=info"]
-    depends_on:
-      - redis
-      - rabbitmq
-      - web
-    user: www-data
-    restart: on-failure
-    env_file:
-      - variables.env
-    environment:
-      - SERVICE_TYPE=celery-beat
-    volumes:
-      - vulschedula-data:/app
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - internal-net
-    healthcheck:
-      test: ["CMD", "pgrep", "celery"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  # Postgres Database
-  postgres:
-    image: postgres:14.5
-    restart: always
-    volumes:
-      - vulschedula-postgres:/var/lib/postgresql/data
-    env_file:
-      - variables.env
-    networks:
-      - internal-net
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # RabbitMQ Message Broker
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - "15673:15672" # Management UI port
-      # - "5672:5672"  # Uncomment if external AMQP access is needed
-    restart: always
-    env_file:
-      - variables.env
-    volumes:
-      - vulschedula-rabbitmq:/var/lib/rabbitmq
-    networks:
-      - internal-net
-    healthcheck:
-      test: ["CMD-SHELL", "rabbitmqctl status"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -189,7 +81,7 @@ services:
     env_file:
       - variables.env
     volumes:
-      - vulschedula-redis:/data
+      - ./data/redis:/data
     networks:
       - internal-net
     healthcheck:
@@ -202,8 +94,3 @@ networks:
   internal-net:
     driver: bridge
 
-volumes:
-  vulschedula-data: {}                         # declare the named volume
-  vulschedula-postgres: {}                         # declare the named volume
-  vulschedula-rabbitmq: {}                         # declare the named volume
-  vulschedula-redis: {}                         # declare the named volume

@@ -2,7 +2,6 @@ from pathlib import Path
 import os
 import json
 
-from celery.schedules import crontab
 from dotenv import load_dotenv
 from os.path import join, dirname
 from datetime import timedelta
@@ -14,15 +13,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 HOST_IP = os.environ.get("HOST_IP", "localhost")
 HOST_NAME = os.environ.get("HOST_NAME", "schedula.catholic-u.ai")
-DB_HOST = os.environ.get("DB_HOST", "localhost")
-POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD", "superman")
+
 
 
 REDIS_USERNAME = "guest"
 REDIS_HOST = "redis"
 REDIS_PORT = 6379
-REDIS_DB_CELERY = 1
-REDIS_DB_RESULT = 1
 REDIS_DB_CACHE = 3
 
 
@@ -132,8 +128,6 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.apple",
     "allauth.socialaccount.providers.github",
     "allauth.socialaccount.providers.google",
-    "django_celery_beat",
-    "django_celery_results",
     "corsheaders",
     "channels",
     "core",
@@ -205,12 +199,8 @@ WSGI_APPLICATION = "main.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "vul_schedula",
-        "USER": "postgres",
-        "PASSWORD": POSTGRES_PASSWORD,
-        "HOST": "postgres",
-        "PORT": 5432,
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "data" / "db.sqlite3",
     }
 }
 
@@ -220,8 +210,6 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "America/New_York"
 USE_TZ = True
 USE_I18N = True
-CELERY_TIMEZONE = "America/New_York"
-CELERY_ENABLE_UTC = False
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -229,11 +217,6 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_SSL = True
 EMAIL_PORT = 465
 AUTH_USER_MODEL = "core.User"
-
-CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB_CELERY}"
-CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB_RESULT}"
-CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_TASK_SERIALIZER = "json"
 
 CACHES = {
     "default": {
@@ -252,8 +235,6 @@ CACHES = {
         },
     },
 }
-
-CELERY_BEAT_SCHEDULE = {}
 
 
 SECRET_KEY = "django-secure-hs6j037urx7iav+7#10%-vu4l4f5@@-1_zo)oft3g8$vf2$jmp"

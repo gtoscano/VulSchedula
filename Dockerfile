@@ -10,12 +10,6 @@ ENV LC_ALL="en_US.UTF-8"
 ENV LC_CTYPE="en_US.UTF-8"
 ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/lib
 ENV LD_RUN_PATH=/usr/local/lib:/usr/lib
-ENV AMQP_USERNAME=guest
-ENV AMQP_PASSWORD=guest
-ENV SQL_DATABASE=mydb
-ENV SQL_USER=myuser
-ENV SQL_PASSWORD=32ghukj45ihhkj3425
-ENV SQL_PORT=3306
 ARG DOCKER_GID=994
 
 # fail the build if /version doesn’t exist
@@ -30,7 +24,7 @@ RUN apt-get -y install apt-utils locales-all locales wget
 RUN locale-gen en_US.UTF-8
 RUN dpkg-reconfigure --frontend noninteractive tzdata
 
-RUN mkdir -p /app/home /code
+RUN mkdir -p /app/home /app/data /code
 
 
 
@@ -40,7 +34,7 @@ RUN mkdir -p /app/home /code
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install -y build-essential cmake \
   zip unzip \
-  python3-pip python-is-python3 python3-psycopg2 \
+  python3-pip python-is-python3 \
   software-properties-common apt-transport-https \
   gnupg2 curl ca-certificates vim docker.io
 
