@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto px-4 pt-24 pb-10 max-w-5xl">
+    <h1 class="text-3xl font-bold mb-6">Chat Room — {{ room }}</h1>
+
+    <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Chat area -->
+        <div class="flex-1">
+            <div id="chat-box"
+                 class="bg-base-200 rounded-lg p-4 h-96 overflow-y-auto flex flex-col gap-2 mb-4">
+                {% for msg in chat_messages %}
+                <div class="chat chat-start">
+                    <div class="chat-header text-sm opacity-70">
+                        {{ msg.user }}
+                        <time class="text-xs opacity-50 ml-2">{{ msg.timestamp }}</time>
+                    </div>
+                    <div class="chat-bubble">{{ msg.text }}</div>
+                </div>
+                {% empty %}
+                <p class="text-center opacity-50">No messages yet. Start the conversation!</p>
+                {% endfor %}
+            </div>
+
+            <form id="chat-form" class="flex gap-2">
+                {% csrf_token %}
+                <input type="hidden" name="room" value="{{ room }}">
+                <input type="text" name="message" id="chat-input"
+                       class="input input-bordered flex-1"
+                       placeholder="Type a message..." autocomplete="off" required>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+        </div>
+
+        <!-- Online users sidebar -->
+        <div class="lg:w-64">
+            <div class="bg-base-200 rounded-lg p-4">
+                <h2 class="text-lg font-semibold mb-3">
+                    <span class="material-symbols-outlined align-middle text-success">circle</span>
+                    Online Users
+                </h2>
+                <ul id="online-users" class="space-y-1">
+                    {% for u in online_users %}
+                    <li class="flex items-center gap-2">
+                        <span class="badge badge-success badge-xs"></span>
+                        {{ u }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script>
+(function() {
+    const chatBox = document.getElementById('chat-box');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const room = document.querySelector('[name=room]').value;
+
+    // Scroll to bottom
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Send message via AJAX
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const msg = chatInput.value.trim();
+        if (!msg) return;
+
+        fetch("{% url 'chats:send' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'room=' + encodeURIComponent(room) + '&message=' + encodeURIComponent(msg),
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                chatInput.value = '';
+                pollMessages();
+            }
+        });
+    });
+
+    // Poll for new messages
+    function pollMessages() {
+        fetch("{% url 'chats:messages' %}?room=" + encodeURIComponent(room))
+        .then(r => r.json())
+        .then(data => {
+            let html = '';
+            data.messages.forEach(function(msg) {
+                html += '<div class="chat chat-start">' +
+                    '<div class="chat-header text-sm opacity-70">' +
+                    msg.user +
+                    '<time class="text-xs opacity-50 ml-2">' + msg.timestamp + '</time>' +
+                    '</div>' +
+                    '<div class="chat-bubble">' + msg.text + '</div>' +
+                    '</div>';
+            });
+            if (!html) {
+                html = '<p class="text-center opacity-50">No messages yet. Start the conversation!</p>';
+            }
+            chatBox.innerHTML = html;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    }
+
+    // Poll every 3 seconds
+    setInterval(pollMessages, 3000);
+
+    // Poll online users every 10 seconds
+    function pollOnline() {
+        fetch("{% url 'chats:online' %}")
+        .then(r => r.json())
+        .then(data => {
+            let html = '';
+            data.users.forEach(function(u) {
+                html += '<li class="flex items-center gap-2">' +
+                    '<span class="badge badge-success badge-xs"></span>' +
+                    u + '</li>';
+            });
+            document.getElementById('online-users').innerHTML = html;
+        });
+    }
+    setInterval(pollOnline, 10000);
+})();
+</script>
+{% endblock %}

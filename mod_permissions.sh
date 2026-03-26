@@ -28,7 +28,7 @@ esac
 echo "Detected platform: ${PLATFORM}"
 
 # Create required directories and files on the host
-mkdir -p media static node_modules home .celery data
+mkdir -p media static node_modules home .celery data log
 [ -f package-lock.json ] && rm package-lock.json
 [ -f static_files/css/daisyui.css ] && rm static_files/css/daisyui.css
 touch package-lock.json
@@ -41,7 +41,7 @@ if [ "$PLATFORM" = "windows" ]; then
   SERVICE_NAME="${DOCKER_SERVICE_NAME:-web}"
 
   docker compose run --rm --no-deps "$SERVICE_NAME" bash -c "
-    chown -R www-data:www-data package.json package-lock.json media node_modules home .celery static data
+    chown -R www-data:www-data package.json package-lock.json media node_modules home .celery static data log
     chown ${CURRENT_USER}:www-data static_files static_files/css 2>/dev/null || \
       chown www-data:www-data static_files static_files/css
     chmod 775 static_files static_files/css
@@ -64,7 +64,7 @@ else
   echo "Using web user:group -> ${WEB_USER}:${WEB_GROUP}"
 
   # Apply correct ownership
-  chown -R "$WEB_USER":"$WEB_GROUP" package.json package-lock.json media node_modules home .celery data
+  chown -R "$WEB_USER":"$WEB_GROUP" package.json package-lock.json media node_modules home .celery data log
   chown -R "$WEB_USER":"$WEB_GROUP" static
 
   # static_files belongs to CURRENT_USER + web group (staff on mac)

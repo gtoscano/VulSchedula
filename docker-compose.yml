@@ -19,6 +19,17 @@ services:
         fi
       '
     restart: "no"
+  data-init:
+    image: alpine:3.20
+    volumes:
+      - .:/app
+    entrypoint: >
+      sh -c '
+        mkdir -p /app/data /app/log;
+        chown -R 33:33 /app/data /app/log;
+      '
+    restart: "no"
+
   nginx:
     image: nginx:1.27-alpine
     volumes:
@@ -56,6 +67,8 @@ services:
       - "8000:8000" # in case 8080 is used, use 8000 port
     user: www-data
     depends_on:
+      data-init:
+        condition: service_completed_successfully
       redis:
         condition: service_started
     restart: on-failure

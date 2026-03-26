@@ -67,6 +67,7 @@ case "$SERVICE_TYPE" in
     fi
   fi
 
+  mkdir -p data
   print_message "yellow" "Applying makemigrations..."
   python manage.py makemigrations
 

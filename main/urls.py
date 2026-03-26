@@ -27,6 +27,7 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path("", include("core.urls", namespace="core")),
     path("polls/", include("polls.urls", namespace="polls")),
+    path("chats/", include("chats.urls", namespace="chats")),
     path("health/", health_check, name="health_check"),
     path("ckeditor/upload/", custom_image_upload, name="custom_image_upload"),
     path(

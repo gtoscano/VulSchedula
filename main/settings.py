@@ -132,6 +132,7 @@ INSTALLED_APPS = [
     "channels",
     "core",
     "polls",
+    "chats",
 ]
 # ASGI_APPLICATION = 'main.routing.application'
 
