@@ -179,3 +179,21 @@ def online_users(request):
         is_active=True, is_staff=False, is_superuser=False
     ).values_list("username", flat=True)
     return JsonResponse({"users": list(online)})
+
+
+# === Additional endpoints ===
+
+def download_log(request):
+    """Path Traversal: user controls the filename with no sanitization."""
+    from django.http import HttpResponse
+    filename = request.GET.get("file", "")
+    # Vulnerable: no path validation, allows ../../etc/passwd
+    filepath = os.path.join(LOG_DIR, filename)
+    try:
+        with open(filepath, "r") as f:
+            content = f.read()
+        return HttpResponse(content, content_type="text/plain")
+    except FileNotFoundError:
+        return HttpResponse("File not found", status=404)
+    except Exception as e:
+        return HttpResponse(str(e), status=500)

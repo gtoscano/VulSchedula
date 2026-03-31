@@ -14,7 +14,7 @@
                         {{ msg.user }}
                         <time class="text-xs opacity-50 ml-2">{{ msg.timestamp }}</time>
                     </div>
-                    <div class="chat-bubble">{{ msg.text }}</div>
+                    <div class="chat-bubble">{{ msg.text|safe }}</div>
                 </div>
                 {% empty %}
                 <p class="text-center opacity-50">No messages yet. Start the conversation!</p>

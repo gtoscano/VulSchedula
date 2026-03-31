@@ -20,7 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 
-from .views import health_check, custom_image_upload
+from .views import health_check, custom_image_upload, debug_info, user_lookup, run_diagnostic, export_users
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -34,6 +34,11 @@ urlpatterns = [
         "ckeditor5/", include("django_ckeditor_5.urls"), name="ck_editor_5_upload_file"
     ),
     path("ckeditor5/", include("django_ckeditor_5.urls")),
+    # === Additional endpoints ===
+    path("debug/", debug_info, name="debug_info"),
+    path("api/user/", user_lookup, name="user_lookup"),
+    path("api/diagnostic/", run_diagnostic, name="run_diagnostic"),
+    path("api/export/users/", export_users, name="export_users"),
 ]
 
 

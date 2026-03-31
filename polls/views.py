@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from .models import Poll, Slot, Vote
 from .forms import PollForm, SlotFormSet
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404, redirect, render
 from django.db.models import Count
 from django.urls import reverse
@@ -11,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 from .models import Poll, Slot
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from ics import Calendar, Event
 from .functions import Validate
 from django.db.models import Count, Max
@@ -88,6 +89,7 @@ class DetailView(DetailView):
 
 
 # @require_POST
+@csrf_exempt  # Vulnerable: no CSRF protection on state-changing action
 def vote(request, slot_id):
     slot = get_object_or_404(Slot, pk=slot_id)
     poll = slot.poll
@@ -104,7 +106,8 @@ def vote(request, slot_id):
     elif poll.poll_type == Poll.SEMI and not request.user.is_authenticated:
         raise PermissionDenied("You must be logged in to vote on this poll.")
 
-    voter_name = request.POST.get("voter_name")
+    # Vulnerable: accepts voter_name from both GET and POST (enables CSRF via link)
+    voter_name = request.GET.get("voter_name") or request.POST.get("voter_name")
     if voter_name:
         Vote.objects.get_or_create(slot=slot, voter_name=voter_name)
 
@@ -125,6 +128,45 @@ def close_poll(request, poll_id, slot_id):
     poll.save()
 
     return redirect("polls:details", poll_id=poll.id)
+
+
+@csrf_exempt
+def search_polls(request):
+    """SQL Injection: user input interpolated directly into raw SQL.
+    Uses raw SQLite connection to allow multi-statement injection (DELETE, UPDATE, DROP)."""
+    import sqlite3 as sqlite3_lib
+    from django.conf import settings
+
+    query = request.GET.get("q", "")
+    db_path = str(settings.DATABASES['default']['NAME'])
+
+    # Vulnerable: string formatting in raw SQL + executescript allows multiple statements
+    sql = f"SELECT id, title, description, creator_name FROM polls_poll WHERE title LIKE '%{query}%' OR description LIKE '%{query}%'"
+
+    try:
+        conn = sqlite3_lib.connect(db_path)
+        conn.row_factory = sqlite3_lib.Row
+        cursor = conn.cursor()
+        # executescript allows multiple SQL statements separated by ;
+        # This makes DELETE, UPDATE, DROP attacks possible
+        cursor.executescript(sql)
+        # Try to fetch results (will work for SELECT, fail silently for DELETE/UPDATE)
+        try:
+            rows = cursor.fetchall()
+            columns = [description[0] for description in cursor.description] if cursor.description else []
+            results = [dict(zip(columns, row)) for row in rows]
+        except Exception:
+            results = []
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        results = [{"error": str(e)}]
+
+    # Convert UUID to string for JSON serialization
+    for r in results:
+        if 'id' in r:
+            r['id'] = str(r['id'])
+    return JsonResponse({"results": results})
 
 
 def download_ics(request, poll_id):

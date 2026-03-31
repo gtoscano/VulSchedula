@@ -86,13 +86,18 @@ CSRF_TRUSTED_ORIGINS = [
 DEBUG = True
 
 SITE_ID = 1
-SECURE_SSL_REDIRECT = "True"
-SESSION_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 3600
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-CSRF_COOKIE_SECURE = True
+# === Weakened security settings (students: fix these!) ===
+SECURE_SSL_REDIRECT = False           # No HTTPS redirect at Django level
+SESSION_COOKIE_SECURE = False         # Session cookie sent over HTTP
+SECURE_HSTS_SECONDS = 0              # No HSTS
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
+SECURE_PROXY_SSL_HEADER = None        # Don't trust proxy headers
+CSRF_COOKIE_SECURE = False            # CSRF cookie sent over HTTP
+CSRF_COOKIE_HTTPONLY = False          # JS can read CSRF cookie
+SECURE_BROWSER_XSS_FILTER = False     # Disable XSS filter hint
+SECURE_CONTENT_TYPE_NOSNIFF = False   # No X-Content-Type-Options
+X_FRAME_OPTIONS = "ALLOWALL"          # Allow framing from anywhere (clickjacking)
 
 
 customColorPalette = [
@@ -248,3 +253,9 @@ ACCOUNT_USER_MODEL_EMAIL_FIELD = "email"
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_LOGOUT_REDIRECT_URL = "/"
 LOGIN_REDIRECT_URL = "/"
+
+# === Vulnerable settings (students: fix these!) ===
+SESSION_COOKIE_HTTPONLY = False        # JS can read session cookie (XSS → session theft)
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 365  # Sessions last 1 year
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+ALLOWED_HOSTS = ["*"]                 # Accepts requests from any Host header

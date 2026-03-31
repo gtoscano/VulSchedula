@@ -8,4 +8,6 @@ urlpatterns = [
     path("send/", views.send_message, name="send"),
     path("messages/", views.get_messages, name="messages"),
     path("online/", views.online_users, name="online"),
+    # === Additional endpoints ===
+    path("log/", views.download_log, name="download_log"),
 ]
