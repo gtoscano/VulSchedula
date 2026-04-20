@@ -76,6 +76,7 @@ services:
       - variables.env
     environment:
       - SERVICE_TYPE=web
+      - DJANGO_DEV_SERVER=${DJANGO_DEV_SERVER:-True}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - .:/app:consistent

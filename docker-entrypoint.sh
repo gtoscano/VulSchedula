@@ -105,7 +105,13 @@ case "$SERVICE_TYPE" in
     python manage.py runscript execute_data
   fi
 
-  gunicorn --reload main.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
+  if [ "${DJANGO_DEV_SERVER:-False}" = "True" ]; then
+    print_message "yellow" "Starting Django dev server (auto-reload enabled)..."
+    exec python manage.py runserver 0.0.0.0:8080
+  else
+    print_message "green" "Starting Gunicorn (production)..."
+    exec gunicorn main.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
+  fi
 
   ;;
 
